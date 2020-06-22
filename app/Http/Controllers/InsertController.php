@@ -14,7 +14,23 @@ class InsertController extends Controller
      */
     public function index()
     {
+        // $events = Insertevent::all()->toArray();
+        
+        // echo "dsdddsds";
+        
+        // return view('todolist',compact('events'));
         return view('todolist');
+        
+    }
+    public function showtable(){
+        $events = Insertevent::all()->toArray();
+        $arrayint=array();
+        foreach($events as $result) {
+            array_push($arrayint,$result['completed']);
+        }
+        // echo $events;
+        // echo $events['completed'];
+        return view('todolist',compact('events'),compact('arrayint'));
     }
 
     /**
@@ -42,7 +58,7 @@ class InsertController extends Controller
         $insertevent = new Insertevent([
             // 'event' => $request->get('event'),
             'event' => $request->get('event'),
-            'completed' => false
+            'completed' => 0
         ]);
         $insertevent->save();
         return redirect()->route('todolist')->with('success','Add todolist success');
@@ -67,7 +83,28 @@ class InsertController extends Controller
      */
     public function edit($id)
     {
-        //
+        dd($id);
+    }
+    public function updateevent($id,$checkStatus)
+    {
+        $status = true;
+        $text = 'event completed';
+        $type = 'error';
+        if($checkStatus == 1){
+            $text = 'event is not finist yet';
+            $type = 'danger';
+            $status = false;
+        }
+        if($checkStatus == 0){
+            $text = 'event completed';
+            $type = 'success';
+            $status = true;
+        }
+        
+        $events = Insertevent::find($id);
+        $events->completed = $status;
+        $events->save();
+        return redirect()->route('todolist')->with($type,$text);
     }
 
     /**
@@ -90,6 +127,9 @@ class InsertController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // dd($id);
+        $event = Insertevent::find($id);
+        $event->delete();
+        return redirect()->route('todolist')->with('success', 'Delete event complete');
     }
 }

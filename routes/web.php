@@ -20,3 +20,5 @@ Route::get('/todolist', function () {
     return view('todolist');
 })->name('todolist');
 Route::resource('insertevent','InsertController');
+Route::get('updateevent/{id}/{checkStatus}','InsertController@updateevent');
+Route::get('/todolist','InsertController@showtable')->name('todolist');
